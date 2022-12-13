@@ -33,6 +33,7 @@ python main.py
 | -r, --replace | replace existing file              | bool |
 | -m, --method  | method to compress with            | int  |
 | -rm, --remove | delete all files containing '-min' | bool |
+| -d, --dry     | runs the script without commiting  | bool |
 
 ### Aliasing
 

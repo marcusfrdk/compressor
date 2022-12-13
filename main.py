@@ -23,6 +23,7 @@ def get_args() -> dict:
     parser.add_argument("-r", "--replace", action="store_true", help="replace existing file")
     parser.add_argument("-m", "--method", default=2, type=int, choices=[0, 1, 2, 3], help="method to compress with")
     parser.add_argument("-rm", "--remove", action="store_true", help="delete all files containing '-min'")
+    parser.add_argument("-d", "--dry", action="store_true", help="runs the script without commiting")
     args = vars(parser.parse_args())
     if not os.path.exists(args["path"]):
         raise ValueError(f"File with path '{args['path']}' does not exist.")
@@ -69,7 +70,7 @@ def compress(path: str, quality: int, replace: bool, method: int = 2):
         print(f"Failed to compress '{file_name}'")
         fails += 1
     else:
-        img_opt.save(fp, format="PNG", quality=quality)
+        img_opt.save(fp, format="PNG", quality=quality) if not run_dry else None
         before = color.red + add_prefix(size_org) + color.end
         after = color.green + add_prefix(size_opt) + color.end
         print(f"Compressed file '{file_name}' from {before} to {after}")
@@ -85,7 +86,12 @@ def is_image(path: str) -> bool:
     return "." in path and path.split(".")[-1] in IMAGE_TYPES
 
 if __name__ == "__main__":
+    global run_dry
+    global fails
+
     args = get_args()
+    run_dry = args["dry"]
+    fails = 0
 
     if is_image(args["path"]):
         compress(args["path"], args["quality"], args["replace"], args["method"])
