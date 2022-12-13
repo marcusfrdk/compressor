@@ -3,7 +3,7 @@ import os
 from argparse import ArgumentParser
 from PIL import Image
 
-IMAGE_TYPES = ["png", "jpg", "jpeg"] # file types the program accepts
+IMAGE_TYPES = ["png", "jpg", "jpeg", "ico"] # file types the program accepts
 
 class Color:
     """ ASCII Colors (non-windows devices only) """
