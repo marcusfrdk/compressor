@@ -52,7 +52,7 @@ def compress(path: str, quality: int, replace: bool, method: int = 2):
     file_name = os.path.basename(path)
     base_path = os.path.abspath(os.path.dirname(path))
     ext = file_name.split(".")[-1]
-    name = file_name.replace(f".{ext}", "") + "-min" if not replace else ""
+    name = file_name.replace(f".{ext}", "") + ("-min" if not replace else "")
     tmp_suffix = f"-tmp-{os.urandom(4).hex()}"
 
     fp = os.path.join(base_path, f"{name}.{ext}")
