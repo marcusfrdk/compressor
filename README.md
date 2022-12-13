@@ -26,14 +26,16 @@ python main.py
 
 ### Flags
 
-| Flag          | Description                        | Type |
-| ------------- | ---------------------------------- | ---- |
-| path          | path to file or directory          | str  |
-| -q, --quality | quality to compress with           | int  |
-| -r, --replace | replace existing file              | bool |
-| -m, --method  | method to compress with            | int  |
-| -rm, --remove | delete all files containing '-min' | bool |
-| -d, --dry     | runs the script without commiting  | bool |
+| Flag          | Description                               | Type |
+| ------------- | ----------------------------------------- | ---- |
+| path          | path to file or directory                 | str  |
+| -q, --quality | quality to compress with                  | int  |
+| -r, --replace | replace existing file                     | bool |
+| -m, --method  | method to compress with                   | int  |
+| -rm, --remove | delete all files containing '-min'        | bool |
+| -d, --dry     | runs the script without commiting         | bool |
+| -c, --colors  | sets the number of colors in output image | int  |
+| -o, --output  | sets the name of the output file          | str  |
 
 ### Aliasing
 
