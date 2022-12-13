@@ -15,10 +15,16 @@ pip install -r requirements.txt
 ### Single file
 
 ```bash
-python main.py path/to/image
+python main.py path/to/file
 ```
 
-### Current directory
+### Multiple files
+
+```bash
+python main.py path/to/directory
+```
+
+### Multiple files (current directory)
 
 ```bash
 python main.py
