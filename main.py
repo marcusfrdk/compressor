@@ -53,9 +53,10 @@ def compress(path: str, quality: int, replace: bool, method: int = 2):
     base_path = os.path.abspath(os.path.dirname(path))
     ext = file_name.split(".")[-1]
     name = file_name.replace(f".{ext}", "") + "-min" if not replace else ""
+    tmp_suffix = f"-tmp-{os.urandom(4).hex()}"
 
     fp = os.path.join(base_path, f"{name}.{ext}")
-    fpt = os.path.join(base_path, f"{name}-tmp.{ext}")
+    fpt = os.path.join(base_path, f"{name}{tmp_suffix}.{ext}")
 
     img_org = Image.open(path)
     img_opt = img_org.quantize(method=method)
@@ -70,10 +71,11 @@ def compress(path: str, quality: int, replace: bool, method: int = 2):
         print(f"Failed to compress '{file_name}'")
         fails += 1
     else:
+        percent = int((1 - size_opt / size_org) * 100)
         img_opt.save(fp, format="PNG", quality=quality) if not run_dry else None
         before = color.red + add_prefix(size_org) + color.end
         after = color.green + add_prefix(size_opt) + color.end
-        print(f"Compressed file '{file_name}' from {before} to {after}")
+        print(f"Compressed file '{file_name}' from {before} to {after} ({percent}%)")
 
 
 def confirm(msg: str) -> bool:
@@ -93,14 +95,10 @@ if __name__ == "__main__":
     run_dry = args["dry"]
     fails = 0
 
-    if is_image(args["path"]):
-        compress(args["path"], args["quality"], args["replace"], args["method"])
-    else:
-        args["path"] = os.path.abspath(args["path"])
-        if not os.path.isdir(args["path"]):
-            print("Invalid file")
-            exit(1)
-        if args["remove"]:
+    if args["remove"]:
+            if not os.path.isdir(args["path"]):
+                print("Path is not a directory.")
+                exit(1)
             if not confirm(f"The action 'remove' will delete any file that includes '-min' in directory '{args['path']}', continue?"):
                 exit(1)
             for file in os.listdir(args["path"]):
@@ -108,9 +106,17 @@ if __name__ == "__main__":
                     path = os.path.join(args["path"], file)
                     print(f"Removed '{path}'")
                     os.remove(path)
+    else:
+        if is_image(args["path"]):
+            compress(args["path"], args["quality"], args["replace"], args["method"])
         else:
-            for img in [path for path in os.listdir(args["path"]) if is_image(path)]:
-                fp = os.path.join(args["path"], img)
-                compress(fp, args["quality"], args["replace"], args["method"])
-            if fails > 0:
-                print(f"{fails} file{'' if fails == 1 else 's'} failed, try switching compression method.")
+            args["path"] = os.path.abspath(args["path"])
+            if not os.path.isdir(args["path"]):
+                print("Invalid file")
+                exit(1)
+            else:
+                for img in [path for path in os.listdir(args["path"]) if is_image(path)]:
+                    fp = os.path.join(args["path"], img)
+                    compress(fp, args["quality"], args["replace"], args["method"])
+                if fails > 0:
+                    print(f"{fails} file{'' if fails == 1 else 's'} failed, try switching compression method.")
