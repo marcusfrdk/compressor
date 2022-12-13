@@ -1,6 +1,6 @@
 # Compressor
 
-Compress a one or many images at once.
+Compress one or many images at once.
 
 ## Installation
 
