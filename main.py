@@ -33,16 +33,14 @@ def get_args() -> dict:
         raise ValueError("Colors must be in range 1-256")
     return args
 
-# Function taken from https://stackoverflow.com/a/14822210
-def add_prefix(bytes: str) -> str:
+def add_suffix(bytes: str) -> str:
     """ Adds a file size prefix based on number of bytes """
-    if bytes == 0:
-       return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(bytes, 1024)))
-    p = math.pow(1024, i)
-    s = round(bytes / p, 2)
-    return f"{s}{size_name[i]}"
+    value, exp = bytes, 0
+    while value >= 1024:
+        value /= 1024
+        exp += 1
+    suffix = {0: "B", 1: "KB", 2: "MB", 3: "GB", 4: "TB"}[exp]
+    return str(round(value, 2)) + suffix
 
 def compress(path: str, quality: int, replace: bool, method: int = 2, output_name: str = None, colors: int = 256):
     """ Main compression function """
@@ -77,8 +75,8 @@ def compress(path: str, quality: int, replace: bool, method: int = 2, output_nam
     else:
         percent = int((1 - size_opt / size_org) * 100)
         img_opt.save(fp, format="PNG", quality=quality) if not run_dry else None
-        before = color.red + add_prefix(size_org) + color.end
-        after = color.green + add_prefix(size_opt) + color.end
+        before = color.red + add_suffix(size_org) + color.end
+        after = color.green + add_suffix(size_opt) + color.end
         new_name = f" -> '{name}.{ext}'" if output_name else ''
         print(f"""Compressed file '{file_name}'{new_name} from {before} to {after} ({percent}%)""")
 
